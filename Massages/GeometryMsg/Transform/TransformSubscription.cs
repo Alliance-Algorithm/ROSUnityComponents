@@ -3,10 +3,11 @@ using ROS2;
 using std_msgs.msg;
 using UnityEngine;
 
+[RequireComponent(typeof(ROS2UnityComponent))]
 public class TransformSubscription : MonoBehaviour
 {
     public string NodeName = "unity_ros2_node";
-    public string TopicName = "/transform"; // Change this to your desired image topic
+    public string TopicName = "/sentry/transform/show"; // Change this to your desired image topic
     public string FrameId = "unity"; // Change this to your desired image topic
     public float fps = 10;
     private ISubscription<geometry_msgs.msg.Pose2D> subscription;
@@ -22,9 +23,14 @@ public class TransformSubscription : MonoBehaviour
         ros2Node = ros2Unity.CreateOrGetNode(NodeName);
         subscription = ros2Node.CreateSubscription<geometry_msgs.msg.Pose2D>(TopicName, CallBack);
     }
+    Vector3 v = new();
     void CallBack(geometry_msgs.msg.Pose2D msg)
     {
-        transform.position = new Vector3((float)msg.Y, -(float)msg.X, 0);
-        transform.localEulerAngles = new(0, (float)msg.Theta, 0);
+        v = new Vector3((float)msg.Y, -(float)msg.X, 0);
+        // transform.localEulerAngles = new(0, (float)msg.Theta, 0);
+    }
+    void Update()
+    {
+        transform.position = v;
     }
 }

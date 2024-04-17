@@ -3,10 +3,11 @@ using ROS2;
 using std_msgs.msg;
 using UnityEngine;
 
+[RequireComponent(typeof(ROS2UnityComponent))]
 public class TransformPublisher : MonoBehaviour
 {
     public string NodeName = "unity_ros2_node";
-    public string TopicName = "/transform"; // Change this to your desired image topic
+    public string TopicName = "/sentry/transform/publish"; // Change this to your desired image topic
     public string FrameId = "unity"; // Change this to your desired image topic
     public float fps = 10;
     private IPublisher<geometry_msgs.msg.Pose2D> publisher;
@@ -30,8 +31,6 @@ public class TransformPublisher : MonoBehaviour
         {
             yield return new WaitForSeconds(1 / fps);
             if (!ros2Unity.Ok())
-                continue;
-            if (capturer.texture == null)
                 continue;
             geometry_msgs.msg.Pose2D msg = new();
             msg = new()

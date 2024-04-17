@@ -31,10 +31,10 @@ namespace ROS2
     /// </summary>
     public class ROS2UnityComponent : MonoBehaviour
     {
-        private ROS2ForUnity ros2forUnity;
-        private List<ROS2Node> nodes;
-        private List<INode> ros2csNodes; // For performance in spinning
-        private List<Action> executableActions;
+        private static ROS2ForUnity ros2forUnity;
+        private static List<ROS2Node> nodes;
+        private static List<INode> ros2csNodes; // For performance in spinning
+        private static List<Action> executableActions;
         private bool initialized = false;
         private bool quitting = false;
         private int interval = 2;  // Spinning / executor interval in ms
@@ -76,12 +76,12 @@ namespace ROS2
 
             lock (mutex)
             {
-                foreach (ROS2Node n in nodes)
+                for (int i = 0; i < nodes.Count; i++)
                 {  // Assumed to be a rare operation on rather small (<1k) list
-                    if (n.name == name)
+                    if (nodes[i].name == name)
                     {
                         Debug.Log("Cannot create node " + name + ". A node with this name already exists!");
-                        return n;
+                        return nodes[i];
                     }
                 }
                 ROS2Node node = new ROS2Node(name);
