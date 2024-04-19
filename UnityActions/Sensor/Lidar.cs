@@ -47,8 +47,8 @@ public class Lidar : MonoBehaviour
 
         for (int i = 0; i < RaycastPrecision; i++)
         {
-            var phi = Mathf.Acos(UnityEngine.Random.Range(-0.788010753606722f, 0.121869343405147f)) * 2 * (0.5f + UnityEngine.Random.Range(-1, 0));
-            var theta = UnityEngine.Random.Range(-2 * Mathf.PI, 2 * Mathf.PI);
+            var phi = Mathf.Acos(UnityEngine.Random.Range(-0.838670567945424f, 0.121869343405147f)) * 2 * (0.5f + UnityEngine.Random.Range(-1, 0));
+            var theta = UnityEngine.Random.Range(-Mathf.PI, Mathf.PI);
             Vector3 direction = MaxLength * new Vector3(Mathf.Sin(phi) * Mathf.Cos(theta), Mathf.Cos(phi), Mathf.Sin(phi) * Mathf.Sin(theta));
             commands[i] = new RaycastCommand(origin, direction, QueryParameters.Default);
 
