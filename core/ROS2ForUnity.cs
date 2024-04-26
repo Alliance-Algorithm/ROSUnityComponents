@@ -28,7 +28,7 @@ namespace ROS2
     internal class ROS2ForUnity
     {
         private static bool isInitialized = false;
-        private static string ros2ForUnityAssetFolderName = "Ros2ForUnity_AlrayVer";
+        private static string ros2ForUnityAssetFolderName = "ROSUnityComponents";
         private XmlDocument ros2csMetadata = new XmlDocument();
         private XmlDocument ros2ForUnityMetadata = new XmlDocument();
 

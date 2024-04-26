@@ -4,18 +4,17 @@ using std_msgs.msg;
 using UnityEngine;
 
 [RequireComponent(typeof(ROS2UnityComponent))]
-public class TransformSubscription : MonoBehaviour
+public class TransformSubscription2D : MonoBehaviour
 {
     public string NodeName = "unity_ros2_node";
     public string TopicName = "/sentry/transform/show"; // Change this to your desired image topic
     public bool IsGlobal = false;
-    private ISubscription<geometry_msgs.msg.Pose> subscription;
+    private ISubscription<geometry_msgs.msg.Pose2D> subscription;
     private ROS2UnityComponent ros2Unity;
     private ROS2Node ros2Node;
     private CameraCapturer capturer;
     Vector3 begin = new();
     Vector3 v = new();
-    Quaternion r = new();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -26,19 +25,16 @@ public class TransformSubscription : MonoBehaviour
             begin = transform.position;
 
         ros2Node = ros2Unity.CreateOrGetNode(NodeName);
-        subscription = ros2Node.CreateSubscription<geometry_msgs.msg.Pose>(TopicName, CallBack);
+        subscription = ros2Node.CreateSubscription<geometry_msgs.msg.Pose2D>(TopicName, CallBack);
 
     }
-    void CallBack(geometry_msgs.msg.Pose msg)
+    void CallBack(geometry_msgs.msg.Pose2D msg)
     {
-        v = new Vector3((float)msg.Position.X, -(float)msg.Position.Y, (float)msg.Position.Z) + begin;
-        r = new Quaternion((float)msg.Orientation.X, (float)msg.Orientation.Y, -(float)msg.Orientation.Z, (float)msg.Orientation.W) * Quaternion.Euler(180, 0, 0);
+        v = new Vector3((float)msg.Y, -(float)msg.X, 0) + begin;
         // transform.localEulerAngles = new(0, (float)msg.Theta, 0);
-
     }
     void Update()
     {
-        transform.position = v / 1000;
-        transform.localRotation = r;
+        transform.position = v;
     }
 }
