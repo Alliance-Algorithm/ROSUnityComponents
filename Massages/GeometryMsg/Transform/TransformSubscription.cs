@@ -32,7 +32,7 @@ public class TransformSubscription : MonoBehaviour
     void CallBack(geometry_msgs.msg.Pose msg)
     {
         v = new Vector3((float)msg.Position.X, -(float)msg.Position.Y, (float)msg.Position.Z) + begin;
-        r = new Quaternion((float)msg.Orientation.X, (float)msg.Orientation.Y, -(float)msg.Orientation.Z, (float)msg.Orientation.W) * Quaternion.Euler(180, 0, 0);
+        r = new Quaternion(-(float)msg.Orientation.X, -(float)msg.Orientation.Y, -(float)msg.Orientation.Z, (float)msg.Orientation.W) * Quaternion.Euler(180, 0, 0);
         // transform.localEulerAngles = new(0, (float)msg.Theta, 0);
 
     }

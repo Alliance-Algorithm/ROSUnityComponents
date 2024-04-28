@@ -40,7 +40,7 @@ namespace ROS2
 
         public static Platform GetOS()
         {
-            if (Application.platform == RuntimePlatform.LinuxEditor || Application.platform == RuntimePlatform.LinuxPlayer)
+            if (Application.platform == RuntimePlatform.LinuxEditor || Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxServer)
             {
                 return Platform.Linux;
             }
