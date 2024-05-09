@@ -9,6 +9,8 @@ public class NavMeshUpdater : MonoBehaviour
 
     NavMeshPath path;
     NavMeshAgent agent;
+
+    public NavMeshPath Path => path;
     // Update is called once per frame
     void Start()
     {
@@ -20,7 +22,7 @@ public class NavMeshUpdater : MonoBehaviour
     {
         if (!Physics.Raycast(Destination.position + Vector3.up * 2, Vector3.down, out var hitInfo, 4))
             NextPosition.position = transform.position;
-        else if (!NavMesh.SamplePosition(hitInfo.point, out var hit, 0.05f, NavMesh.AllAreas))
+        else if (!NavMesh.SamplePosition(hitInfo.point, out var hit, 0.3f, NavMesh.AllAreas))
             NextPosition.position = transform.position;
         else
         {
