@@ -51,7 +51,7 @@ public class LocalGridPublisher : MonoBehaviour
         {
             yield return new WaitForSeconds(1 / fps);
             builder.Build(out sbyte[,] ignore);
-            builder.MakeESDF(ref ignore);
+            // builder.MakeESDF(ref ignore);
             msg.Info = new()
             {
                 Width = (uint)ignore.GetLength(0),

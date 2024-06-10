@@ -19,7 +19,7 @@ public class LocalGridMapBuilder : MonoBehaviour
     public bool ShowESDF = false;
     sbyte[,] map_;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void Start()
     {
         map_ = new sbyte[(int)Mathf.Ceil(BoxSize / Resolution) + 1, (int)Mathf.Ceil(BoxSize / Resolution) + 1];
         halfBoxsize = BoxSize / 2;
@@ -37,20 +37,21 @@ public class LocalGridMapBuilder : MonoBehaviour
         {
             for (int y = 0; y < k; y += 1)
             {
-                Vector3 p1 = transform.position + new Vector3(x * Resolution - halfBoxsize, 2, y * Resolution - halfBoxsize);
+                Vector3 p1 = transform.position + transform.right * (x * Resolution - halfBoxsize) + Vector3.up * 2 + transform.forward * (-y * Resolution + halfBoxsize);
+                // Vector3 p1 = transform.position + new Vector3(x * Resolution - halfBoxsize, 2, y * Resolution - halfBoxsize);
 
                 if (!Physics.Raycast(p1, Vector3.down, out var hitInfo, 5))
                     map_[x, y] = 0;
                 else if (!NavMesh.SamplePosition(hitInfo.point, out var hit, 0.3f, NavMesh.AllAreas))
                     map_[x, y] = 0;
                 else
-                    map_[x, y] = 100;
+                    map_[x, y] = -1;
 
                 if (ShowBin)
                     Debug.DrawLine(p1, p1 + Vector3.forward * Resolution, new Color(
-                    map_[x, y],
-                    map_[x, y],
-                    map_[x, y]), 0.5f);
+                    1 + map_[x, y],
+                    -map_[x, y],
+                    0), 0.5f);
 
             }
         }

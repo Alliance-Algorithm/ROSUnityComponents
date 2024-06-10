@@ -26,11 +26,14 @@ public class ForwardSubscription : MonoBehaviour
     Vector3 v = new();
     void CallBack(geometry_msgs.msg.Pose2D msg)
     {
-        v = new Vector3((float)msg.X, 0, (float)msg.Y);
+        v = new Vector3(-(float)msg.Y, 0, (float)msg.X);
         // transform.localEulerAngles = new(0, (float)msg.Theta, 0);
     }
     void Update()
     {
-        transform.position += v * Speed * Time.deltaTime;
+        var t = (float)v.z * transform.forward + (float)v.x * transform.right;
+        // Debug.Log(v);
+        transform.position += t * Speed * Time.deltaTime;
+        Debug.DrawLine(transform.position + Vector3.up * 6, transform.position + t * 10 + Vector3.up * 6, Color.blue);
     }
 }

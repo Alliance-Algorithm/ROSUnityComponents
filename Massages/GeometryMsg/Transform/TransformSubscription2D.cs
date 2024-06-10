@@ -30,11 +30,11 @@ public class TransformSubscription2D : MonoBehaviour
     }
     void CallBack(geometry_msgs.msg.Pose2D msg)
     {
-        v = new Vector3((float)msg.X, 0, (float)msg.Y) + begin;
+        v = new Vector3(-(float)msg.Y, 0, (float)msg.X);
         // transform.localEulerAngles = new(0, (float)msg.Theta, 0);
     }
     void Update()
     {
-        transform.position = v;
+        transform.position = v + begin;
     }
 }

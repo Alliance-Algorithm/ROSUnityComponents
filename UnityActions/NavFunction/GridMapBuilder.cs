@@ -3,21 +3,25 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MapBuilder : MonoBehaviour
+public class GridMapBuilder : MonoBehaviour
 {
-    public int SizeX = 1500;
-    public int SizeY = 2800;
+    public int SizeX = 15;
+    public int SizeY = 28;
+
     internal Vector3 XY2Vector3(int x, int y)
     {
-        return ((x - SizeX / 2.0f) * 15.0f / SizeX) * Vector3.right + ((y - SizeY / 2.0f) * 28.0f / SizeY) * Vector3.forward + 3 * Vector3.up;
+        return (x - SizeX / 2.0f) * 15.0f / SizeX * Vector3.right + (y - SizeY / 2.0f) * 28.0f / SizeY * Vector3.forward + 3 * Vector3.up;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Build(out sbyte[,] Map, float Resolution)
     {
-        string head = string.Format("uint8_t GlobalMap[{0,10}][{1,10}] = ", SizeX, SizeY) + '{';
+        SizeX = (int)(SizeX / Resolution);
+        SizeY = (int)(SizeY / Resolution);
+
+        Map = new sbyte[SizeX, SizeY];
+
         for (int i = 0; i < SizeX; i++)
         {
-            head += "{";
 
             for (int j = 0; j < SizeY; j++)
             {
@@ -25,23 +29,14 @@ public class MapBuilder : MonoBehaviour
                 {
                     if (NavMesh.SamplePosition(hit.point, out NavMeshHit ignore, 0.3f, NavMesh.AllAreas))
                     {
-                        head += "0";
-                        if (j != SizeY - 1)
-                            head += ",";
-                        continue;
+                        Map[i, j] = 100;
                     }
                 }
-                head += "1";
-                if (j != SizeY - 1)
-                    head += ",";
+                Map[i, j] = 0;
             }
-
-            head += "}";
-            if (i != SizeX - 1)
-                head += ",\n";
         }
-        head += "};\n";
 
-        File.WriteAllText("./Build/Map/GlobalMap.hpp", head);
+        SizeX = 15;
+        SizeY = 28;
     }
 }

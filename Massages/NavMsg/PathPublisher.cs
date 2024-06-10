@@ -19,13 +19,14 @@ public class PathPublisher : MonoBehaviour
     private ROS2Node ros2Node;
     public float fps = 10;
     public NavMeshUpdater navUpdater;
+    private Vector3 begin;
 
     public std_msgs.msg.Header header;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        header = new Header() { Frame_id = FrameId };
+        begin = transform.position;
         // Initialize ROS connection
         ros2Unity = GetComponent<ROS2UnityComponent>();
 
@@ -36,6 +37,8 @@ public class PathPublisher : MonoBehaviour
     }
     IEnumerator Publisher()
     {
+        header = new Header() { Frame_id = FrameId };
+        var trans = GetComponent<OdenmetrySubscriber>();
         while (true)
         {
             yield return new WaitForSeconds(1 / fps);
@@ -43,7 +46,9 @@ public class PathPublisher : MonoBehaviour
             List<geometry_msgs.msg.PoseStamped> poses = new();
             foreach (var c in navUpdater.Path.corners)
             {
-                poses.Add(new() { Pose = new() { Position = new() { X = c.x, Y = c.z } }, Header = header });
+                var d = c - begin;
+                // Debug.Log(begin);
+                poses.Add(new() { Pose = new() { Position = new() { X = d.z, Y = -d.x } }, Header = header });
             }
             msg.Poses = poses.ToArray();
             msg.Header = header;
