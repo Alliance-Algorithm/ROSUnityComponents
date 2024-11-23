@@ -1,6 +1,6 @@
 using System.Collections;
 using ROS2;
-using std_msgs.msg;
+using Unity.Robotics.ROSTCPConnector;
 using UnityEngine;
 
 public class OdenmetryPublisher : MonoBehaviour
@@ -9,23 +9,24 @@ public class OdenmetryPublisher : MonoBehaviour
     public string TopicName = "/sentry/transform/publish"; // Change this to your desired image topic
     public string FrameId = "unity"; // Change this to your desired image topic
     public float fps = 10;
-    private IPublisher<nav_msgs.msg.Odometry> publisher;
-    private ROS2UnityComponent ros2Unity;
-    private ROS2Node ros2Node;
+    ROSConnection ros;
+    RosMessageTypes.Std.HeaderMsg header;
     public bool IsGlobal = false;
     Vector3 begin = new();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // Initialize ROS connection
-        ros2Unity = GetComponent<ROS2UnityComponent>();
+        ros = ROSConnection.GetOrCreateInstance();
         if (!IsGlobal)
             begin = transform.position;
-
-        ros2Node = ros2Unity.CreateOrGetNode(NodeName);
-        publisher = ros2Node.CreatePublisher<nav_msgs.msg.Odometry>(TopicName);
+        ros.RegisterPublisher<RosMessageTypes.Nav.OdometryMsg>(TopicName);
 
         StartCoroutine(Publisher());
+        header = new()
+        {
+            frame_id = FrameId
+        };
     }
 
     // Update is called once per frame
@@ -38,24 +39,22 @@ public class OdenmetryPublisher : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1 / fps);
-            if (!ros2Unity.Ok())
-                continue;
-            nav_msgs.msg.Odometry msg = new();
+            RosMessageTypes.Nav.OdometryMsg msg = new();
             var v = transform.position - begin;
             msg = new()
             {
-                Header = new() { Frame_id = FrameId },
-                Pose = new()
+                header = header,
+                pose = new()
                 {
-                    Pose = new()
+                    pose = new()
                     {
-                        Position = new() { X = -v.z, Y = -v.x, Z = v.y },
-                        Orientation = new() { X = -transform.rotation.z, Y = -transform.rotation.x, Z = transform.rotation.y, W = transform.rotation.w }
+                        position = new() { x = v.x, y = -v.z, z = v.y },
+                        orientation = new() { x = transform.rotation.x, y = -transform.rotation.z, z = transform.rotation.y, w = transform.rotation.w }
                     }
                 }
             };
 
-            publisher.Publish(msg);
+            ros.Publish(TopicName, msg);
         }
     }
 }

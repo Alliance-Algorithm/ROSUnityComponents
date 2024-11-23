@@ -1,17 +1,14 @@
 using System.Collections;
-using ROS2;
-using std_msgs.msg;
+using Unity.Robotics.ROSTCPConnector;
 using UnityEngine;
 
-[RequireComponent(typeof(ROS2UnityComponent))]
 public class TransformSubscription : MonoBehaviour
 {
     public string NodeName = "unity_ros2_node";
     public string TopicName = "/sentry/transform/show"; // Change this to your desired image topic
     public bool IsGlobal = false;
-    private ISubscription<geometry_msgs.msg.Pose> subscription;
-    private ROS2UnityComponent ros2Unity;
-    private ROS2Node ros2Node;
+
+    ROSConnection ros;
     private CameraCapturer capturer;
     Vector3 begin = new();
     Vector3 v = new();
@@ -20,19 +17,18 @@ public class TransformSubscription : MonoBehaviour
     void Start()
     {
         // Initialize ROS connection
-        ros2Unity = GetComponent<ROS2UnityComponent>();
+        ros = ROSConnection.GetOrCreateInstance();
 
         if (!IsGlobal)
             begin = transform.position;
 
-        ros2Node = ros2Unity.CreateOrGetNode(NodeName);
-        subscription = ros2Node.CreateSubscription<geometry_msgs.msg.Pose>(TopicName, CallBack);
+        ros.Subscribe<RosMessageTypes.Geometry.PoseMsg>(TopicName, CallBack);
 
     }
-    void CallBack(geometry_msgs.msg.Pose msg)
+    void CallBack(RosMessageTypes.Geometry.PoseMsg msg)
     {
-        v = new Vector3((float)msg.Position.X, -(float)msg.Position.Y, (float)msg.Position.Z) + begin;
-        r = new Quaternion((float)msg.Orientation.X, (float)msg.Orientation.Y, -(float)msg.Orientation.Z, (float)msg.Orientation.W) * Quaternion.Euler(180, 0, 0);
+        v = new Vector3((float)msg.position.x, (float)msg.position.z, -(float)msg.position.y) + begin;
+        r = new Quaternion((float)msg.orientation.x, (float)msg.orientation.z, -(float)msg.orientation.y, (float)msg.orientation.w) * Quaternion.Euler(180, 0, 0);
         // r = new Quaternion((float)msg.Orientation.X, (float)msg.Orientation.Y, -(float)msg.Orientation.Z, (float)msg.Orientation.W) * Quaternion.Euler(180, 0, 0);
         // transform.localEulerAngles = new(0, (float)msg.Theta, 0);
 
