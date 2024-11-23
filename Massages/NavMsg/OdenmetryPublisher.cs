@@ -48,8 +48,8 @@ public class OdenmetryPublisher : MonoBehaviour
                 {
                     pose = new()
                     {
-                        position = new() { x = v.x, y = -v.z, z = v.y },
-                        orientation = new() { x = transform.rotation.x, y = -transform.rotation.z, z = transform.rotation.y, w = transform.rotation.w }
+                        position = new() { x = v.x, y = v.z, z = v.y },
+                        orientation = new() { x = transform.rotation.x, y = transform.rotation.z, z = transform.rotation.y, w = transform.rotation.w }
                     }
                 }
             };

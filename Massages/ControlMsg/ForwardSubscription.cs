@@ -20,7 +20,7 @@ public class ForwardSubscription : MonoBehaviour
     Vector3 v = new();
     void CallBack(RosMessageTypes.Geometry.Pose2DMsg msg)
     {
-        v = new Vector3((float)msg.x, 0, -(float)msg.y);
+        v = new Vector3((float)msg.x, 0, (float)msg.y);
     }
     void Update()
     {

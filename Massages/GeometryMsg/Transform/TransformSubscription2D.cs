@@ -24,7 +24,7 @@ public class TransformSubscription2D : MonoBehaviour
     }
     void CallBack(RosMessageTypes.Geometry.Pose2DMsg msg)
     {
-        v = new Vector3((float)msg.x, 0, -(float)msg.y);
+        v = new Vector3((float)msg.x, 0, (float)msg.y);
         // transform.localEulerAngles = new(0, (float)msg.Theta, 0);
     }
     void Update()

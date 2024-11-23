@@ -27,7 +27,7 @@ public class TransformPublisher : MonoBehaviour
             msg = new()
             {
                 x = transform.position.x,
-                y = -transform.position.z,
+                y = transform.position.z,
                 theta = -transform.localEulerAngles.y
             };
 

@@ -35,7 +35,7 @@ public class ForwardPulisher : MonoBehaviour
             vec = new(vec.x, 0, vec.z);
             vec = (Mathf.Clamp01(vec.magnitude / MaxSpeedDistance) * (SpeedMax - SpeedMin) + SpeedMin) * vec.normalized;
             Debug.DrawLine(transform.position, vec + transform.position);
-            msg = new(vec.x, -vec.z, 0);
+            msg = new(vec.x, vec.z, 0);
             ros.Publish(TopicName, msg);
         }
     }

@@ -34,7 +34,7 @@ public class OdenmetrySubscriber : MonoBehaviour
     }
     void CallBack(RosMessageTypes.Nav.OdometryMsg msg)
     {
-        position = new Vector3((float)msg.pose.pose.position.x, 0, -(float)msg.pose.pose.position.y);
+        position = new Vector3((float)msg.pose.pose.position.x, 0, (float)msg.pose.pose.position.y);
 
         // yaw (z-axis rotation)
         var q = msg.pose.pose.orientation;

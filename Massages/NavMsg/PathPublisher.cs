@@ -42,7 +42,7 @@ public class PathPublisher : MonoBehaviour
             {
                 var d = c - begin;
                 // Debug.Log(begin);
-                poses.Add(new() { pose = new() { position = new() { x = d.x, y = -d.z } }, header = header });
+                poses.Add(new() { pose = new() { position = new() { x = d.x, y = d.z } }, header = header });
             }
             msg.poses = poses.ToArray();
             msg.header = header;
