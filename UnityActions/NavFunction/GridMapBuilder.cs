@@ -13,7 +13,7 @@ public class GridMapBuilder : MonoBehaviour
         return (x - SizeX / 2.0f) * 15.0f / SizeX * Vector3.right + (y - SizeY / 2.0f) * 28.0f / SizeY * Vector3.forward + 3 * Vector3.up;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Build(out sbyte[,] Map, float Resolution)
+    public void Build(out sbyte[,] Map, float Resolution)
     {
         SizeX = (int)(SizeX / Resolution);
         SizeY = (int)(SizeY / Resolution);
@@ -27,7 +27,7 @@ public class GridMapBuilder : MonoBehaviour
             {
                 if (Physics.Raycast(XY2Vector3(i, j), Vector3.down, out RaycastHit hit, 6))
                 {
-                    if (NavMesh.SamplePosition(hit.point, out NavMeshHit ignore, 0.3f, NavMesh.AllAreas))
+                    if (NavMesh.SamplePosition(hit.point, out NavMeshHit ignore, 0.03f, NavMesh.AllAreas))
                     {
                         Map[i, j] = 100;
                     }

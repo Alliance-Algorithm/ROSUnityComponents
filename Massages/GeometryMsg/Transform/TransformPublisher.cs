@@ -1,7 +1,7 @@
 using System.Collections;
 using Unity.Robotics.ROSTCPConnector;
 using UnityEngine;
-public class TransformPublisher2D : MonoBehaviour
+public class TransformPublisher : MonoBehaviour
 {
     public string TopicName = "/sentry/transform/publish"; // Change this to your desired image topic
     public string FrameId = "unity"; // Change this to your desired image topic
@@ -14,7 +14,7 @@ public class TransformPublisher2D : MonoBehaviour
         // Initialize ROS connection
         ros = ROSConnection.GetOrCreateInstance();
 
-        ros.RegisterPublisher<RosMessageTypes.Geometry.Pose2DMsg>(TopicName);
+        ros.RegisterPublisher<RosMessageTypes.Geometry.PoseStampedMsg>(TopicName);
 
         StartCoroutine(Publisher());
     }
@@ -23,12 +23,26 @@ public class TransformPublisher2D : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(1 / fps);
-            RosMessageTypes.Geometry.Pose2DMsg msg = new();
+            RosMessageTypes.Geometry.PoseStampedMsg msg = new();
             msg = new()
             {
-                x = transform.position.x,
-                y = transform.position.z,
-                theta = -transform.localEulerAngles.y
+                pose = new()
+                {
+                    position = new()
+                    {
+                        x = transform.position.x,
+                        y = transform.position.z,
+                        z = transform.position.y
+                    },
+                    orientation = new()
+                    {
+                        x = -transform.rotation.x,
+                        y = -transform.rotation.z,
+                        z = -transform.rotation.y,
+                        w = transform.rotation.w
+                    }
+                },
+                header = new() { frame_id = FrameId }
             };
 
             ros.Publish(TopicName, msg);

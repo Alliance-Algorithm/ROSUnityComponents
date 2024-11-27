@@ -4,8 +4,9 @@ using UnityEngine;
 public class ForwardSubscription : MonoBehaviour
 {
     public float Speed = 0.1f;
+    public float ErrorRate = 0.01f;
     public string NodeName = "unity_ros2_node";
-    public string TopicName = "/sentry/transform/show"; // Change this to your desired image topic
+    public string TopicName = "/sentry/transform/velocity"; // Change this to your desired image topic
     public string FrameId = "unity"; // Change this to your desired image topic
     public float fps = 10;
 
@@ -25,8 +26,9 @@ public class ForwardSubscription : MonoBehaviour
     void Update()
     {
         var t = (float)v.z * transform.forward + (float)v.x * transform.right;
+        t = t + Quaternion.AngleAxis(Random.Range(-180, 180), Vector3.up) * Vector3.right * ErrorRate * Mathf.Clamp(t.magnitude, 0, 1);
         // Debug.Log(v);
-        transform.position += t * Speed * Time.deltaTime;
-        Debug.DrawLine(transform.position + Vector3.up * 6, transform.position + t * 10 + Vector3.up * 6, Color.blue);
+        transform.position += t * Time.deltaTime;
+        Debug.DrawLine(transform.position + Vector3.up * 6, transform.position + t + Vector3.up * 6, Color.blue);
     }
 }

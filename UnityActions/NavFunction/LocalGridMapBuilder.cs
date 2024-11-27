@@ -8,8 +8,8 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(NavMeshAgent))]
 public class LocalGridMapBuilder : MonoBehaviour
 {
-    public float BoxSize = 6;
-    public float Resolution = 0.1f;
+    public float BoxSize = 10;
+    public float Resolution = 0.5f;
 
     public float ESDF_MaxDistance = 2f;
 
@@ -37,20 +37,21 @@ public class LocalGridMapBuilder : MonoBehaviour
         {
             for (int y = 0; y < k; y += 1)
             {
-                Vector3 p1 = transform.position + transform.right * (x * Resolution - halfBoxsize) + Vector3.up * 2 + transform.forward * (-y * Resolution + halfBoxsize);
+                Vector3 position = new(Mathf.RoundToInt(transform.position.x / Resolution) * Resolution, 0, Mathf.RoundToInt(transform.position.z / Resolution) * Resolution);
+                Vector3 p1 = position + transform.right * (x * Resolution - halfBoxsize) + Vector3.up * 2 + transform.forward * (y * Resolution - halfBoxsize);
                 // Vector3 p1 = transform.position + new Vector3(x * Resolution - halfBoxsize, 2, y * Resolution - halfBoxsize);
 
                 if (!Physics.Raycast(p1, Vector3.down, out var hitInfo, 5))
-                    map_[x, y] = 0;
-                else if (!NavMesh.SamplePosition(hitInfo.point, out var hit, 0.3f, NavMesh.AllAreas))
-                    map_[x, y] = 0;
+                    map_[x, y] = 1;
+                else if (!NavMesh.SamplePosition(hitInfo.point, out var hit, 0.02f, NavMesh.AllAreas))
+                    map_[x, y] = 1;
                 else
-                    map_[x, y] = -1;
+                    map_[x, y] = 0;
 
                 if (ShowBin)
                     Debug.DrawLine(p1, p1 + Vector3.forward * Resolution, new Color(
-                    1 + map_[x, y],
-                    -map_[x, y],
+                    1 + map_[y, x],
+                    -map_[y, x],
                     0), 0.5f);
 
             }
